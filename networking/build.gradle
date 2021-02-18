@@ -3,6 +3,10 @@ plugins {
     id 'kotlin-android'
 }
 
+def apikeyPropertiesFile = rootProject.file('apikey.properties')
+def apikeyProperties = new Properties()
+apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -15,13 +19,15 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+        buildConfigField "String", "BASE_URL", '"https://gorest.co.in/public-api/"'
+        buildConfigField("String", "TOKEN", apikeyProperties['token'])
+
     }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "BASE_URL", '"https://gorest.co.in/public-api/"'
         }
     }
 
@@ -47,10 +53,8 @@ dependencies {
 
     //region Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.8.1'
-    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.1'
-    implementation 'com.squareup.retrofit2:adapter-rxjava:2.3.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.5.0'
+    implementation "com.squareup.retrofit2:adapter-rxjava2:2.4.0"
     //endregion
 
     //region OkHttp
@@ -66,10 +70,10 @@ dependencies {
     implementation "org.koin:koin-android-scope:$koin_version"
     //endregion
 
+    implementation "io.reactivex.rxjava2:rxjava:2.2.19"
+    implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
+
     // Timber
     implementation 'com.jakewharton.timber:timber:4.7.1'
-
-    // Conductors
-    implementation 'com.bluelinelabs:conductor:3.0.0'
 
 }
